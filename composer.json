@@ -1,0 +1,17 @@
+{
+    "name": "ritva/stock",
+    "authors": [
+        {
+            "name": "RitvarsE",
+            "email": "ritvars.eglajs@outlook.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Tests\\": "tests/"
+        }
+    },
+    "description": ""
+}
