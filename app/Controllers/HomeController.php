@@ -35,6 +35,9 @@ class HomeController
     public function registered(): void
     {
         $this->mainService->registered();
-        header('refresh:5;url=/');
+    }
+    public function account(): string
+    {
+        return $this->mainService->account();
     }
 }

@@ -26,6 +26,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute(['POST'], '/', [HomeController::class, 'index']);
     $r->addRoute(['GET'], '/register', [HomeController::class, 'register']);
     $r->addRoute(['POST'], '/register', [HomeController::class, 'registered']);
+    $r->addRoute(['GET'], '/account', [HomeController::class, 'account']);
 });
 
 // Fetch method and URI from somewhere

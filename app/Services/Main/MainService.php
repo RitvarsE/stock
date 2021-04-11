@@ -57,11 +57,15 @@ class MainService
     {
         if ($this->usersService->verifyUser($_POST['username'], $_POST['password'])) {
             $_SESSION['username'] = $_POST['username'];
-            return $this->twigService->environment()->render('AccountView.twig');
+            return $this->twigService->environment()->render('LoginView.twig', ['auth' => true]);
         } else {
-            header("refresh:2;url=/");
-            return 'Invalid username/password';
+            return $this->twigService->environment()->render('LoginView.twig', ['auth' => false]);
         }
 
+    }
+
+    public function account(): string
+    {
+        return $this->twigService->environment()->render('AccountView.twig');
     }
 }

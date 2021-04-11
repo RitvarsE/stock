@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+{% if auth == true %}
+    Login successful
+    <meta http-equiv="refresh" content="3; URL=/account" />
+{% else %}
+    Invalid username or password
+    <meta http-equiv="refresh" content="3; URL=/" />
+{% endif %}
+</body>
+</html>
