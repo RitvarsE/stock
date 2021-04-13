@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title> Stock Market!</title>
+</head>
+<body>
+<div class="h-24 bg-white">
+
+    <nav class="flex px-4 border-b md:shadow-lg items-center relative">
+        <ul class="md:px-2 ml-auto md:flex md:space-x-2 absolute md:relative top-full left-0 right-0">
+            <li>
+                <a href="/" class="flex md:inline-flex p-4 items-center hover:bg-gray-50">
+                    <span>Home</span>
+                </a>
+            </li>
+            {% if session.username is empty %}
+                <form method="post" class="bg-blue text-center text-black rounded">
+                    <input type="text" name="username" placeholder="Username"
+                           class=" border  text-sm py-2 px-3 rounded" required/>
+                    <input type="password" name="password" placeholder="Password"
+                           class=" border  text-sm py-2 px-3 rounded my-3" required/>
+                    <button type="submit" class="bg-blue-200 text-black font-bold py-2 px-4 rounded border mx-auto ">
+                        Login
+                    </button>
+                    <form>
+                        <button class="bg-blue-200 text-black font-bold py-2 px-4 rounded border mx-auto "
+                                formaction="/register">Register
+                        </button>
+                    </form>
+                </form>
+            {% else %}
+                <li>
+                    <a href="/account" class="flex md:inline-flex p-4 items-center hover:bg-gray-50">
+                        <span>Your stock</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/buy" class="flex md:inline-flex p-4 items-center hover:bg-gray-50">
+                        <span>Buy</span>
+                    </a>
+                </li>
+                <li class="flex md:inline-flex p-4 items-center">Hello, {{ session.username }}.
+                    <h1 class=" ml-1 font-bold"> Your wallet: {{ wallet }}$</h1></li>
+                <form action="/logout">
+                    <button type="submit" class="bg-blue-200 text-black font-bold py-1 px-2 mt-3 rounded border ">
+                        Logout
+                    </button>
+                </form>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

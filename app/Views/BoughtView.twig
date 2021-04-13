@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'HeaderView.twig' %}
+<body>
+{% if success == true %}
+    <h1 class="text-lg text-center">You successfully bought stock</h1>
+    <meta http-equiv="refresh" content="3; URL=/account" />
+{% else %}
+    <h1 class="text-lg">You don`t have enough money</h1>
+    <meta http-equiv="refresh" content="3; URL=/buy" />
+{% endif %}
+</body>
+</html>

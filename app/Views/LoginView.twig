@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% include 'HeaderView.twig' %}
 <body>
 {% if auth == true %}
-    Login successful
+    <h1 class="text-lg text-center">Login successful</h1>
     <meta http-equiv="refresh" content="3; URL=/account" />
 {% else %}
-    Invalid username or password
+    <h1 class="text-lg">Invalid username or password</h1>
     <meta http-equiv="refresh" content="3; URL=/" />
 {% endif %}
 </body>

@@ -6,7 +6,6 @@ namespace App\Repositories\Users;
 
 use Medoo\Medoo;
 use PDO;
-use function PHPUnit\Framework\throwException;
 
 class MySQLUsersRepository implements UsersRepository
 {
@@ -21,9 +20,6 @@ class MySQLUsersRepository implements UsersRepository
         ]);
     }
 
-    /**
-     * @throws \ErrorException
-     */
     public function createUser(string $username, string $password): void
     {
         if ($this->checkUser($username)) {
@@ -41,7 +37,21 @@ class MySQLUsersRepository implements UsersRepository
 
     public function verifyUser(string $username, string $password): bool
     {
-        $hash = $this->database->get('user', ['userName', 'password'], ['userName' => $username]);
-        return $hash['userName'] === $username && password_verify($password, $hash['password']);
+        if (empty($username) || empty($password) || !$this->checkUser($username)) {
+            return false;
+        } else {
+            $hash = $this->database->get('user', ['userName', 'password'], ['userName' => $username]);
+            return $hash['userName'] === $username && password_verify($password, $hash['password']);
+        }
+    }
+
+    public function getWallet(string $username): string
+    {
+        return $this->database->get('user', 'Wallet', ['userName' => $username]);
+    }
+
+    public function updateWallet(string $username, int $amount): void
+    {
+        $this->database->update('user', ['Wallet' => ($this->getWallet($username) - $amount)], ['userName' => $username]);
     }
 }

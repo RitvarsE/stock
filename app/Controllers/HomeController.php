@@ -22,6 +22,12 @@ class HomeController
         // echo $this->mainService->getQuote('AAPL')['c'];
     }
 
+    public function logout(): void
+    {
+        header("refresh:0;url=/");
+        $this->mainService->logout();
+    }
+
     public function index(): string
     {
         return $this->mainService->verifyUser();
@@ -35,9 +41,5 @@ class HomeController
     public function registered(): void
     {
         $this->mainService->registered();
-    }
-    public function account(): string
-    {
-        return $this->mainService->account();
     }
 }

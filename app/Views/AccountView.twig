@@ -1,1 +1,67 @@
-hello {{ session.username }}
+<!DOCTYPE html>
+<html lang="en">
+<body>
+{% include 'HeaderView.twig' %}
+<table class="ml-10">
+    <thead>
+    <tr>
+        <th class="border-separate border border-green-800">Stock</th>
+        <th class="border-separate border border-green-800">Price(Bought)</th>
+        <th class="border-separate border border-green-800">Stock amount</th>
+        <th class="border-separate border border-green-800">Price(current)</th>
+        <th class="border-separate border border-green-800">Profit</th>
+        <th class="border-separate border border-green-800">Sell price(total)</th>
+        <th class="border-separate border border-green-800">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for stock in stocks %}
+        <tr>
+            <th class=" border-separate border border-green-800">{{ stock.stockName }}</th>
+            <th class=" border-separate border border-green-800">{{ stock.stockPriceBought }}$</th>
+            <th class=" border-separate border border-green-800">{{ stock.stockAmount }}</th>
+            <th class=" border-separate border border-green-800">{{ stock.stockPriceNow }}$</th>
+            {% if stock.stockPriceNow * stock.stockAmount - stock.stockPriceBought * stock.stockAmount < 0 %}
+                <th class=" border-separate text-red-600 border border-green-800">
+                    {{ stock.stockPriceNow * stock.stockAmount - stock.stockPriceBought * stock.stockAmount }}$
+                </th>
+            {% else %}
+                <th class=" border-separate text-green-800 border border-green-800">
+                    {{ stock.stockPriceNow * stock.stockAmount - stock.stockPriceBought * stock.stockAmount }}$
+                </th>
+            {% endif %}
+            <th class=" border-separate text-green-800 border border-green-800"> {{ stock.stockAmount * stock.stockPriceNow }}
+                $
+            </th>
+            <th class=" border-separate text-green-800 border border-green-800">
+                {% if stock.active == true %}
+                    <h1 class="text-green-500">active</h1>
+                {% else %}
+                    <h1 class="text-red-500">sold</h1>
+                {% endif %}
+            </th>
+            <th class=" border-separate text-green-800 border border-green-800">
+                {% if stock.active == true %}
+                    <form method="post" action="/sold">
+                        <input type="hidden" name="stock"
+                               value="{{ stock.stockName }}">
+                        <input type="hidden" name="count"
+                               value="{{ stock.stockAmount }}">
+                        <input type="hidden" name="id"
+                               value="{{ stock.id }}">
+                        <input type="hidden" name="stockPrice"
+                               value="{{ stock.stockAmount * stock.stockPriceNow }}">
+                        <button type="submit" class="bg-blue-200 text-black font-bold py-1 px-2 rounded border ">
+                            Sell
+                        </button>
+                    </form>
+                {% else %}
+                    <h1 class="ml-5">Price sold: {{ stock.stockSold }}$</h1>
+                {% endif %}
+            </th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

@@ -25,4 +25,14 @@ class UsersService
     {
         return $this->usersRepository->verifyUser($username, $password);
     }
+
+    public function getWallet(string $username): string
+    {
+        return $this->usersRepository->getWallet($username);
+    }
+
+    public function updateWallet(string $username, int $amount): void
+    {
+        $this->usersRepository->updateWallet($username, $amount);
+    }
 }
