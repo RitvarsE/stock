@@ -27,7 +27,8 @@ class MainService
         $this->twigService->environment()->addGlobal('post', $_POST);
 
         if (isset($_SESSION['username'])) {
-            $this->twigService->environment()->addGlobal('wallet', $this->usersService->getWallet($_SESSION['username']));
+            $this->twigService->environment()
+                ->addGlobal('wallet', $this->usersService->getWallet($_SESSION['username']));
         }
         $this->stockService = $stockService;
     }
@@ -61,9 +62,12 @@ class MainService
         return $this->twigService->environment()->render('RegisterView.twig');
     }
 
-    public function registered(): void
+    public function registered(): string
     {
-        $this->usersService->createUser($_POST['username'], $_POST['password']);
+        if ($this->usersService->createUser($_POST['username'], $_POST['password'])) {
+            return $this->twigService->environment()->render('RegisteredView.twig', ['register' => true]);
+        }
+        return $this->twigService->environment()->render('RegisteredView.twig', ['register' => false]);
     }
 
     public function verifyUser(): string
@@ -79,6 +83,7 @@ class MainService
 
     public function account(): string
     {
+        $this->addCurrentPrice();
         $stocks = $this->stockService->allStock($_SESSION['username']);
         return $this->twigService->environment()->render('AccountView.twig',
             ['stocks' => $stocks]);
@@ -96,10 +101,10 @@ class MainService
     public function bought(): string
     {
         if ($this->usersService->getWallet($_SESSION['username'])
-            >= $_POST['count'] * $this->getQuote($_POST['stock'])) {
+            >= $_POST['count'] * $this->getQuote($_POST['stock']) * 100) {
 
             $this->usersService->updateWallet($_SESSION['username'],
-                $_POST['count'] * $this->getQuote($_POST['stock']));
+                $_POST['count'] * $this->getQuote($_POST['stock']) * 100);
 
             $this->stockService->buy($_SESSION['username'],
                 $_POST['stock'],
@@ -114,14 +119,20 @@ class MainService
 
     public function addCurrentPrice(): void
     {
-        $this->stockService->addCurrentPrice();
+        $this->stockService->addCurrentPrice($_SESSION['username']);
     }
 
     public function sold(): string
     {
         $this->usersService->updateWallet($_SESSION['username'],
-            ($_POST['count'] * $this->getQuote($_POST['stock'])) * -1);
+            $_POST['stockPrice'] * -1);
         $this->stockService->sell($_POST['id'], $_POST['stockPrice']);
+
         return $this->twigService->environment()->render('SoldView.twig');
+    }
+
+    public function nothing(): string
+    {
+        return $this->twigService->environment()->render('NothingView.twig');
     }
 }

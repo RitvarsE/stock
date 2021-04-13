@@ -20,13 +20,14 @@ class MySQLUsersRepository implements UsersRepository
         ]);
     }
 
-    public function createUser(string $username, string $password): void
+    public function createUser(string $username, string $password): bool
     {
         if ($this->checkUser($username)) {
-            echo 'user with that username already exists';
+            return false;
         } else {
             $this->database->insert('user', ['userName' => $username,
-                'password' => password_hash($password, PASSWORD_DEFAULT), 'Wallet' => 1000]);
+                'password' => password_hash($password, PASSWORD_DEFAULT), 'Wallet' => 100000]);
+            return true;
         }
     }
 
@@ -45,12 +46,12 @@ class MySQLUsersRepository implements UsersRepository
         }
     }
 
-    public function getWallet(string $username): string
+    public function getWallet(string $username): ?float
     {
         return $this->database->get('user', 'Wallet', ['userName' => $username]);
     }
 
-    public function updateWallet(string $username, int $amount): void
+    public function updateWallet(string $username, float $amount): void
     {
         $this->database->update('user', ['Wallet' => ($this->getWallet($username) - $amount)], ['userName' => $username]);
     }

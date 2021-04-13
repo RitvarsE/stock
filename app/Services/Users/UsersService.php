@@ -16,9 +16,9 @@ class UsersService
         $this->usersRepository = $usersRepository;
     }
 
-    public function createUser(string $username, string $password): void
+    public function createUser(string $username, string $password): bool
     {
-        $this->usersRepository->createUser($username, $password);
+        return $this->usersRepository->createUser($username, $password);
     }
 
     public function verifyUser(string $username, string $password): bool
@@ -26,12 +26,12 @@ class UsersService
         return $this->usersRepository->verifyUser($username, $password);
     }
 
-    public function getWallet(string $username): string
+    public function getWallet(string $username): ?float
     {
         return $this->usersRepository->getWallet($username);
     }
 
-    public function updateWallet(string $username, int $amount): void
+    public function updateWallet(string $username, float $amount): void
     {
         $this->usersRepository->updateWallet($username, $amount);
     }

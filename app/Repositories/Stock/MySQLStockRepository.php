@@ -6,7 +6,6 @@ namespace App\Repositories\Stock;
 
 use Medoo\Medoo;
 use PDO;
-use PDOStatement;
 
 class MySQLStockRepository implements StockRepository
 {
@@ -33,7 +32,7 @@ class MySQLStockRepository implements StockRepository
         $this->database->insert('stock',
             ['userName' => $username,
                 'stockName' => $stock,
-                'stockPriceBought' => $price,
+                'stockPriceBought' => $price * 100,
                 'stockAmount' => $count]);
     }
 
@@ -42,15 +41,21 @@ class MySQLStockRepository implements StockRepository
         $this->database->update('stock', ['active' => false, 'stockSold' => $sellPrice], ['id' => $id]);
     }
 
-    public function addCurrentPrice(): void
+    public function addCurrentPrice(string $userName): void
     {
         $stocks = $this->database->select('stock', 'stockName');
+
         foreach ($stocks as $stock) {
-            $price = json_decode(
-                file_get_contents(
-                    'https://finnhub.io/api/v1/quote?symbol=' . $stock . '&token=c1pj3v2ad3id1hoq2ap0')
-                , true)['c'];
-            $this->database->update('stock', ['StockPriceNow' => $price], ['stockName' => $stock, 'active' => true]);
+            if ($this->database->has('stock', ['stockName' => $stock, 'active' => true])) {
+                $price = json_decode(
+                    file_get_contents(
+                        'https://finnhub.io/api/v1/quote?symbol=' . $stock . '&token=c1pj3v2ad3id1hoq2ap0')
+                    , true)['c'];
+
+                $this->database->update('stock',
+                    ['StockPriceNow' => $price * 100],
+                    ['userName' => $userName, 'stockName' => $stock, 'active' => true]);
+            }
         }
     }
 }

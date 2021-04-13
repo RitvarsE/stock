@@ -15,23 +15,31 @@ class AccountController
         $this->mainService = $mainService;
     }
 
-    public function account(): string
+    public function account(): void
     {
-        $this->mainService->addCurrentPrice();
-        return $this->mainService->account();
+        if (isset($_SESSION['username'])) {
+            echo $this->mainService->account();
+        } else {
+            header('refresh:0;url=/');
+        }
     }
 
-    public function buy(): string
+    public function buy(): void
     {
-        return $this->mainService->buy();
+        if (isset($_SESSION['username'])) {
+            echo $this->mainService->buy();
+        } else {
+            header('refresh:0;url=/');
+        }
     }
 
-    public function bought(): string
+    public function bought(): void
     {
-        return $this->mainService->bought();
+        echo $this->mainService->bought();
     }
-    public function sold():string
+
+    public function sold(): void
     {
-        return $this->mainService->sold();
+        echo $this->mainService->sold();
     }
 }

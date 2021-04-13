@@ -7,6 +7,7 @@ namespace App\Services\Twig;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\Extra\Intl\IntlExtension;
 
 class TwigService
 {
@@ -21,6 +22,7 @@ class TwigService
             'debug' => true,
         ]);
         $this->twig->addExtension(new DebugExtension());
+        $this->twig->addExtension(new IntlExtension());
     }
 
     public function environment(): Environment

@@ -4,8 +4,6 @@
 namespace App\Controllers;
 
 use App\Services\Main\MainService;
-use Finnhub;
-use GuzzleHttp;
 
 class HomeController
 {
@@ -19,7 +17,6 @@ class HomeController
     public function login(): string
     {
         return $this->mainService->login();
-        // echo $this->mainService->getQuote('AAPL')['c'];
     }
 
     public function logout(): void
@@ -38,8 +35,8 @@ class HomeController
         return $this->mainService->registerView();
     }
 
-    public function registered(): void
+    public function registered(): string
     {
-        $this->mainService->registered();
+        return $this->mainService->registered();
     }
 }

@@ -53,7 +53,7 @@ $uri = rawurldecode($uri);
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        // ... 404 Not Found
+        require_once '../app/Views/NothingView.twig';
         break;
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
         $allowedMethods = $routeInfo[1];
@@ -67,5 +67,3 @@ switch ($routeInfo[0]) {
         echo ($container->get($controller))->$method($vars);
         break;
 }
-///company profile var dabut logo ara.
-/// sākumā pārbauda vai company profile ir datubāzē, ja nē, tad jautā finnhubam.

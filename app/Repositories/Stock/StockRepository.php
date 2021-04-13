@@ -4,7 +4,6 @@
 namespace App\Repositories\Stock;
 
 
-
 interface StockRepository
 {
     public function allStock(string $username): array;
@@ -13,5 +12,5 @@ interface StockRepository
 
     public function sell(string $id, string $sellPrice): void;
 
-    public function addCurrentPrice(): void;
+    public function addCurrentPrice(string $userName): void;
 }

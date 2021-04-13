@@ -22,16 +22,16 @@ class StockService
 
     public function buy(string $username, string $stock, string $price, string $count): void
     {
-         $this->stockRepository->buy($username, $stock, $price, $count);
+        $this->stockRepository->buy($username, $stock, $price, $count);
     }
 
     public function sell(string $id, string $stockPrice): void
     {
-         $this->stockRepository->sell($id, $stockPrice);
+        $this->stockRepository->sell($id, $stockPrice);
     }
 
-    public function addCurrentPrice(): void
+    public function addCurrentPrice(string $userName): void
     {
-        $this->stockRepository->addCurrentPrice();
+        $this->stockRepository->addCurrentPrice($userName);
     }
 }
