@@ -100,8 +100,9 @@ class MainService
 
     public function bought(): string
     {
-        if ($this->usersService->getWallet($_SESSION['username'])
-            >= $_POST['count'] * $this->getQuote($_POST['stock']) * 100) {
+        if (ctype_digit($_POST['count']) && $this->usersService->getWallet($_SESSION['username'])
+            >= $_POST['count'] * $this->getQuote($_POST['stock']) * 100
+            && $_POST['count'] > 0) {
 
             $this->usersService->updateWallet($_SESSION['username'],
                 $_POST['count'] * $this->getQuote($_POST['stock']) * 100);
