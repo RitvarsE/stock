@@ -1,7 +1,6 @@
 {% extends 'LayoutTemplate.twig' %}
 {% block content %}
     {% if post.stockname is empty %}
-        Popular stocks: RACE, AAPL, F, YNDX, MXMG, INTC, NVDA, AMD
         <form method="post" class="mt-2">
             <div class="flex items-center">
                 <input type="text" name="stockname"
@@ -11,7 +10,7 @@
             </div>
         </form>
     {% elseif quote > 0 %}
-        How many {{ post.stockname }} with current price: {{ quote }}$ you wanna buy?
+        How many {{ post.stockname }} with current price: {{ quote |format_currency('USD',{min_fraction_digit:3})  }} you wanna buy?
         <form method="post" class="mt-2">
             <div class="flex items-center">
                 <input type="text" name="count"

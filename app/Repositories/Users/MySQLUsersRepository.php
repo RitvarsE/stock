@@ -25,15 +25,15 @@ class MySQLUsersRepository implements UsersRepository
         if ($this->checkUser($username)) {
             return false;
         } else {
-            $this->database->insert('user', ['userName' => $username,
-                'password' => password_hash($password, PASSWORD_DEFAULT), 'Wallet' => 100000]);
+            $this->database->insert('user', ['user_name' => $username,
+                'password' => password_hash($password, PASSWORD_DEFAULT), 'wallet' => 100000]);
             return true;
         }
     }
 
     public function checkUser(string $username): bool
     {
-        return $this->database->has('user', ['userName' => $username]);
+        return $this->database->has('user', ['user_name' => $username]);
     }
 
     public function verifyUser(string $username, string $password): bool
@@ -41,18 +41,18 @@ class MySQLUsersRepository implements UsersRepository
         if (empty($username) || empty($password) || !$this->checkUser($username)) {
             return false;
         } else {
-            $hash = $this->database->get('user', ['userName', 'password'], ['userName' => $username]);
-            return $hash['userName'] === $username && password_verify($password, $hash['password']);
+            $hash = $this->database->get('user', ['user_name', 'password'], ['user_name' => $username]);
+            return $hash['user_name'] === $username && password_verify($password, $hash['password']);
         }
     }
 
     public function getWallet(string $username): ?float
     {
-        return $this->database->get('user', 'Wallet', ['userName' => $username]);
+        return $this->database->get('user', 'wallet', ['user_name' => $username]);
     }
 
     public function updateWallet(string $username, float $amount): void
     {
-        $this->database->update('user', ['Wallet' => ($this->getWallet($username) - $amount)], ['userName' => $username]);
+        $this->database->update('user', ['wallet' => ($this->getWallet($username) - $amount)], ['user_name' => $username]);
     }
 }

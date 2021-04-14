@@ -13,4 +13,6 @@ interface StockRepository
     public function sell(string $id, string $sellPrice): void;
 
     public function addCurrentPrice(string $userName): void;
+
+    public function getQuote(string $stock): string;
 }

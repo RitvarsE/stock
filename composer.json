@@ -15,7 +15,8 @@
         "spomky-labs/otphp": "^10.0",
       "ext-pdo": "*",
       "ext-json": "*",
-        "twig/intl-extra": "^3.3"
+        "twig/intl-extra": "^3.3",
+        "doctrine/cache": "^1.10"
     }
     ,
     "require-dev": {

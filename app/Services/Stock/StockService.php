@@ -34,4 +34,9 @@ class StockService
     {
         $this->stockRepository->addCurrentPrice($userName);
     }
+
+    public function getQuote(string $stock): string
+    {
+       return $this->stockRepository->getQuote($stock);
+    }
 }

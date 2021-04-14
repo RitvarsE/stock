@@ -4,46 +4,52 @@
 namespace App\Services\Main;
 
 
+use App\Services\Quote\QuoteService;
 use App\Services\Stock\StockService;
-use App\Services\Twig\TwigService;
 use App\Services\Users\UsersService;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Extra\Intl\IntlExtension;
+use Twig\Loader\FilesystemLoader;
 
 class MainService
 {
-    private TwigService $twigService;
     private UsersService $usersService;
     private StockService $stockService;
+    private FilesystemLoader $loader;
+    private Environment $twig;
 
-    public function __construct(
-        TwigService $twigService,
-        UsersService $usersService,
-        StockService $stockService
-    )
+
+    public function __construct(UsersService $usersService, StockService $stockService)
 
     {
-        $this->twigService = $twigService;
+        $this->stockService = $stockService;
         $this->usersService = $usersService;
-        $this->twigService->environment()->addGlobal('session', $_SESSION);
-        $this->twigService->environment()->addGlobal('post', $_POST);
 
+        // twig
+        $this->loader = new FilesystemLoader('../app/Views');
+        $this->twig = new Environment($this->loader, [
+            'auto_reload' => true,
+            'debug' => true,
+        ]);
+        $this->twig->addExtension(new DebugExtension());
+        $this->twig->addExtension(new IntlExtension());
+        $this->twig->addGlobal('session', $_SESSION);
+        $this->twig->addGlobal('post', $_POST);
         if (isset($_SESSION['username'])) {
-            $this->twigService->environment()
+            $this->twig
                 ->addGlobal('wallet', $this->usersService->getWallet($_SESSION['username']));
         }
-        $this->stockService = $stockService;
     }
 
     public function getQuote(string $stock): string
     {
-        return json_decode(
-            file_get_contents(
-                'https://finnhub.io/api/v1/quote?symbol=' . $stock . '&token=c1pj3v2ad3id1hoq2ap0')
-            , true)['c'];
+        return $this->stockService->getQuote($stock);
     }
 
     public function login(): string
     {
-        return $this->twigService->environment()->render('HomeView.twig');
+        return $this->twig->render('HomeView.twig');
     }
 
     public function logout(): void
@@ -54,29 +60,29 @@ class MainService
     public function index(): string
     {
 
-        return $this->twigService->environment()->render('HomeView.twig');
+        return $this->twig->render('HomeView.twig');
     }
 
     public function registerView(): string
     {
-        return $this->twigService->environment()->render('RegisterView.twig');
+        return $this->twig->render('RegisterView.twig');
     }
 
     public function registered(): string
     {
         if ($this->usersService->createUser($_POST['username'], $_POST['password'])) {
-            return $this->twigService->environment()->render('RegisteredView.twig', ['register' => true]);
+            return $this->twig->render('RegisteredView.twig', ['register' => true]);
         }
-        return $this->twigService->environment()->render('RegisteredView.twig', ['register' => false]);
+        return $this->twig->render('RegisteredView.twig', ['register' => false]);
     }
 
     public function verifyUser(): string
     {
         if ($this->usersService->verifyUser($_POST['username'], $_POST['password'])) {
             $_SESSION['username'] = $_POST['username'];
-            return $this->twigService->environment()->render('LoginView.twig', ['auth' => true]);
+            return $this->twig->render('LoginView.twig', ['auth' => true]);
         } else {
-            return $this->twigService->environment()->render('LoginView.twig', ['auth' => false]);
+            return $this->twig->render('LoginView.twig', ['auth' => false]);
         }
 
     }
@@ -85,7 +91,7 @@ class MainService
     {
         $this->addCurrentPrice();
         $stocks = $this->stockService->allStock($_SESSION['username']);
-        return $this->twigService->environment()->render('AccountView.twig',
+        return $this->twig->render('AccountView.twig',
             ['stocks' => $stocks]);
     }
 
@@ -95,12 +101,12 @@ class MainService
         if (isset($_POST['stockname'])) {
             $quote = $this->getQuote($_POST['stockname']);
         }
-        return $this->twigService->environment()->render('buyStockView.twig', ['quote' => $quote]);
+        return $this->twig->render('buyStockView.twig', ['quote' => $quote]);
     }
 
     public function bought(): string
     {
-        if (ctype_digit($_POST['count']) && $this->usersService->getWallet($_SESSION['username'])
+        if (is_numeric($_POST['count']) && $this->usersService->getWallet($_SESSION['username'])
             >= $_POST['count'] * $this->getQuote($_POST['stock']) * 100
             && $_POST['count'] > 0) {
 
@@ -112,9 +118,9 @@ class MainService
                 $this->getQuote($_POST['stock']),
                 $_POST['count']);
 
-            return $this->twigService->environment()->render('BoughtView.twig', ['success' => true]);
+            return $this->twig->render('BoughtView.twig', ['success' => true]);
         }
-        return $this->twigService->environment()->render('BoughtView.twig', ['success' => false]);
+        return $this->twig->render('BoughtView.twig', ['success' => false]);
 
     }
 
@@ -129,11 +135,11 @@ class MainService
             $_POST['stockPrice'] * -1);
         $this->stockService->sell($_POST['id'], $_POST['stockPrice']);
 
-        return $this->twigService->environment()->render('SoldView.twig');
+        return $this->twig->render('SoldView.twig');
     }
 
     public function nothing(): string
     {
-        return $this->twigService->environment()->render('NothingView.twig');
+        return $this->twig->render('NothingView.twig');
     }
 }
